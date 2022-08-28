@@ -25,11 +25,11 @@ public:
 
   auto contains(Node node) -> bool {return false;}
 
-  auto insert(Node node) -> bool
+  auto insert(Node node) -> NodePtr
   {
 	if (!mHeadNode) {
 	  mHeadNode = std::make_shared<Node>(node);
-	  return true;
+	  return mHeadNode;
 	}
 	return mInsert(mHeadNode, node);
   }
@@ -53,27 +53,23 @@ public:
 private:
   NodePtr mHeadNode;
 
-  auto mInsert(NodePtr& curr_node, Node& new_node) -> bool
+  auto mInsert(NodePtr& root, Node& add) -> NodePtr
   {
-	if (new_node.data < curr_node->data) {
-	  if (curr_node->left)
-		return mInsert(curr_node->left, new_node);
-	  else {
-		curr_node->left = std::make_shared<Node>(new_node);
-		new_node.parent = curr_node;
-		return true;
-	  }
+	//recursion termination condition
+	if (!root)
+	  return std::make_shared<Node>(add);
+
+	NodePtr cur;
+	if (add.data < root->data) {
+	  cur = mInsert(root->left, add);
+	  root->left = cur;
 	}
 	else {
-	  if (curr_node->right)
-		return mInsert(curr_node->right, new_node);
-	  else {
-		curr_node->right = std::make_shared<Node>(new_node);
-		new_node.parent = curr_node;
-		return true;
-	  }
+	  cur = mInsert(root->right, add);
+	  root->right = cur;
 	}
-	return false;
+	cur->parent = root;
+	return root;
   }
 
   auto mPrintTree(const NodePtr& node) -> void {
@@ -84,7 +80,6 @@ private:
 	  mPrintTree(node->right);
   }
 };
-
 
 
 int main()
