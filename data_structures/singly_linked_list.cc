@@ -1,12 +1,20 @@
 #include <iostream>
 #include <memory>
+#include <iomanip>
+
+/*
+Reference:
+https://solarianprogrammer.com/2019/02/22/cpp-17-implementing-singly-linked-list-smart-pointers/
+*/
 
 struct Node
 {
   float data;
   std::unique_ptr<Node> next;
   Node(float _data): data(_data) {}
-  ~Node() { "Node " + std::to_string(data) + "deleted."; }
+  ~Node() {
+	std::cout << "Node " + std::to_string(data).substr(0, 4) << + " deleted." << std::endl;
+  }
 };
   
 class SingleLinkedList_ConstantInsertionTime
