@@ -12,9 +12,10 @@ struct Node
   float data;
   std::unique_ptr<Node> next;
   Node(float _data): data(_data) {}
-  ~Node() {
-	std::cout << "Node " + std::to_string(data).substr(0, 4) << + " deleted." << std::endl;
-  }
+  Node(Node* _ptr): data(_ptr->data), next(_ptr) {}
+  // ~Node() {
+  // 	std::cout << "Node " + std::to_string(data).substr(0, 4) << + " deleted." << std::endl;
+  // }
 };
   
 class SingleLinkedList_ConstantInsertionTime
@@ -48,7 +49,18 @@ public:
   }
 
   void reverse() {
+	if (!head)
+	  return;
 
+	Node *cur = head.get();
+	while (cur->next != nullptr) {
+	  print();
+	  cur = head.get();
+	  head = std::move(cur->next);
+	  cur->next = std::move(head->next);
+	  head->next = std::make_unique<Node>(cur);
+	  std::cout << "end iteration" << std::endl;
+	}
   }
   
 private:
@@ -69,10 +81,10 @@ private:
 int main(int argc, char** argv)
 {
   SingleLinkedList_ConstantInsertionTime l;
-  for(int i=0; i<10; ++i)
+  for(int i=0; i<4; ++i)
 	l.push(i);
-  l.pop();
-  l.push(45);
+  l.print();
+  l.reverse();
   l.print();
   return 0;
 }
