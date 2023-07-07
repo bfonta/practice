@@ -1,22 +1,56 @@
 #include<iostream>
 #include<vector>
+#include<unordered_map>
 using namespace std;
 
 class Solution {
 public:
+  // Simplest approach
+  // vector<int> twoSum(vector<int>& nums, int target) {
+  // 	for(int i=0; i<nums.size(); ++i)
+  // 	  {
+  // 		int n = target - nums[i];
+  // 		for(int j=i+1; j<nums.size(); ++j)
+  // 		  {
+  // 			if(n == nums[j])
+  // 			  return {i, j};
+  // 		  }
+  // 	  }
+  // 	return {0};
+  // }
+
+  //Hash-table approach
+  // vector<int> twoSum(vector<int>& nums, int target) {
+  // 	unordered_map<int,int> hashmap;
+  // 	for(int i=0; i<nums.size(); ++i)
+  // 	  {
+  // 		int complement = target - nums[i];
+  // 		hashmap[complement] = i;
+  // 	  }
+  // 	for(int i=0; i<nums.size(); ++i)
+  // 	  {
+  // 		if (hashmap.find(nums[i]) != hashmap.end() and
+  // 			hashmap[nums[i]] != i) {
+  // 		  return {i, hashmap[nums[i]]};
+  // 		}
+  // 	  }
+  // 	return {0};
+  // }
+
+  //Hash-table one pass
   vector<int> twoSum(vector<int>& nums, int target) {
+	unordered_map<int,int> hashmap;
 	for(int i=0; i<nums.size(); ++i)
 	  {
-		int n = target - nums[i];
-		for(int j=0; j<nums.size(); ++j)
-		  {
-			if(i==j) continue;
-			if(n == nums[j])
-			  return {i, j};
-		  }
+		int complement = target - nums[i];
+		if (hashmap.find(nums[i]) != hashmap.end()) {
+		  return {i, hashmap[nums[i]]};
+		}
+		hashmap[complement] = i;
 	  }
 	return {0};
   }
+  
 };
 
 void printVec(vector<int>& vec) {
