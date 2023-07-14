@@ -8,6 +8,7 @@ using namespace std;
 
 class Solution {
 public:
+  // O(n^2) time, O(1) space
   int maxProfitBruteForce(vector<int>& prices) {
 	int maxprof = 0;
 	for(int i=0; i<prices.size(); ++i) {
@@ -57,7 +58,8 @@ public:
 	  return res_cross;
 	}
   }
-	
+
+  // O(nlog(n)) time, O(1) space
   tuple<int,int,int> _findMaxSubArrayCrossing(vector<int>& arr, int low, int mid, int high) {
 	int max_left = -1;
 	int ref_left = -9e5;
@@ -83,7 +85,8 @@ public:
 
 	return make_tuple(max_left,max_right,ref_left+ref_right);
   }
-	
+
+  // O(n) time, O(1) space
   int maxProfitLinear(vector<int>& prices) {
 	if(prices.size()<2) {
 	  return 0;
@@ -110,6 +113,17 @@ public:
 	}
 	return maxprof;
   }
+
+  // O(n) time, O(1) space
+  int maxProfitSimple(vector<int>& prices) {
+	int maxprof = 0;
+	int mini = prices[0];
+	for(int i=1; i<prices.size(); ++i) {
+	  maxprof = max(maxprof, prices[i]-mini);
+	  mini = min(mini, prices[i]);
+	}
+	return maxprof;
+  }
 };
 
 int main(int argc, char** argv)
@@ -124,7 +138,7 @@ int main(int argc, char** argv)
   std::uniform_int_distribution<std::mt19937::result_type> dist100(-100,100); 
 
   int nrep = 1000;
-  auto dtotal1=0, dtotal2=0, dtotal3=0;
+  auto dtotal1=0, dtotal2=0, dtotal3=0, dtotal4=0;
   ofstream out("buy_sell_stock.csv", std::ios_base::out);
 	
   // std::vector<int> sizes = {100, 200, 300, 400, 500, 750, 1000, 2000, 3000, 4000, 5000, 7500, 10000, 15000, 20000, 35000, 50000};
@@ -150,20 +164,24 @@ int main(int argc, char** argv)
 		int res2	= sol.maxProfitDivideAndConquer(prices);
 		auto mid2	= std::chrono::high_resolution_clock::now();
 		int res3	= sol.maxProfitLinear(prices);
+		auto mid3	= std::chrono::high_resolution_clock::now();
+		int res4	= sol.maxProfitSimple(prices);
 		auto end	= std::chrono::high_resolution_clock::now();
 		// cout << res1 << " " << res2 << " " << res3 << endl;
 		
 		dtotal1 += std::chrono::duration_cast<std::chrono::nanoseconds>(mid1-begin).count();
 		dtotal2 += std::chrono::duration_cast<std::chrono::nanoseconds>(mid2-mid1).count();
-		dtotal3 += std::chrono::duration_cast<std::chrono::nanoseconds>(end-mid2).count();
+		dtotal3 += std::chrono::duration_cast<std::chrono::nanoseconds>(mid3-mid2).count();
+		dtotal4 += std::chrono::duration_cast<std::chrono::nanoseconds>(end-mid3).count();
 	  }
 
 	  double time1 = (dtotal1/nrep)/1E9;
 	  double time2 = (dtotal2/nrep)/1E9;
 	  double time3 = (dtotal3/nrep)/1E9;
+	  double time4 = (dtotal4/nrep)/1E9;
 
-	  cout << time1 << " " << time2 << " " << time3 << endl;
-	  out << n << ", " << time1 << ", " << time2 << ", " << time3 << endl;
+	  cout << time1 << " " << time2 << " " << time3 << " " << time4 << endl;
+	  out << n << ", " << time1 << ", " << time2 << ", " << time3 << ", " << time4 << endl;
 	}
 
   out.close();
